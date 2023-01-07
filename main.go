@@ -19,13 +19,14 @@ func GetFilesInDir(dirname string) ([]os.FileInfo, error) {
 }
 
 func ExtractPNGImages(files []os.FileInfo) ([]os.FileInfo) {
+	var pngs []os.FileInfo
 
 	for _, file := range files {
 		if strings.HasSuffix(file.Name(), "jpg") {
-			fmt.Println(file.Name())
+			pngs = append(pngs, file)
 		}
 	}
-	return files
+	return pngs
 }
 
 func main() {
@@ -33,6 +34,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(ExtractPNGImages(files))
+	pngs := ExtractPNGImages(files)
+	
 }
 
