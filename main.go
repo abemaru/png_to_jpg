@@ -6,6 +6,9 @@ import (
 	"os"
 	"io/ioutil"
 	"strings"
+	"path/filepath"
+	"image/jpeg"
+	"image/png"
 )
 
 
@@ -29,12 +32,46 @@ func ExtractPNGImages(files []os.FileInfo) ([]os.FileInfo) {
 	return pngs
 }
 
+func CreateFileName(filepath string) (outputFilepath string) {
+	return strings.Replace(filepath, "png", "jpg", -1)
+}
+
+func ConvertPNGtoJPG(dirname string,  pngs []os.FileInfo) () {
+	for _, pngfile := range pngs {
+		filepath := filepath.Join(dirname, pngfile.Name())
+		file, err := os.Open(filepath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+
+		img, err := png.Decode(file)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		outputPath := CreateFileName(filepath)
+		out, err := os.Create(outputPath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer out.Close()
+
+		fmt.Println(outputPath)
+		err := jpeg.Encode(out, img, nil)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+}
+
 func main() {
 	files, err := GetFilesInDir("sample")
 	if err != nil {
 		log.Fatal(err)
 	}
 	pngs := ExtractPNGImages(files)
+	ConvertPNGtoJPG("sample", pngs)
 	
 }
 
