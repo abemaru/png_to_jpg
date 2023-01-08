@@ -7,8 +7,9 @@ import (
 	"io/ioutil"
 	"strings"
 	"path/filepath"
-	"image/jpeg"
+	_ "image/jpeg"
 	"image/png"
+	"image"
 )
 
 
@@ -45,7 +46,7 @@ func ConvertPNGtoJPG(dirname string,  pngs []os.FileInfo) () {
 		}
 		defer file.Close()
 
-		img, err := png.Decode(file)
+		img, _, err := image.Decode(file)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -58,10 +59,7 @@ func ConvertPNGtoJPG(dirname string,  pngs []os.FileInfo) () {
 		defer out.Close()
 
 		fmt.Println(outputPath)
-		err := jpeg.Encode(out, img, nil)
-		if err != nil {
-			log.Fatal(err)
-		}
+		png.Encode(out, img)
 	}
 }
 
