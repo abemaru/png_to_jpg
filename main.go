@@ -26,7 +26,7 @@ func ExtractPNGImages(files []os.FileInfo) ([]os.FileInfo) {
 	var pngs []os.FileInfo
 
 	for _, file := range files {
-		if strings.HasSuffix(file.Name(), "jpg") {
+		if strings.HasSuffix(file.Name(), "png") {
 			pngs = append(pngs, file)
 		}
 	}
@@ -46,10 +46,14 @@ func ConvertPNGtoJPG(dirname string,  pngs []os.FileInfo) () {
 		}
 		defer file.Close()
 
+		fmt.Println("file opened!")
+
 		img, _, err := image.Decode(file)
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		fmt.Println("image decoded!")
 
 		outputPath := CreateFileName(filepath)
 		out, err := os.Create(outputPath)
@@ -57,6 +61,8 @@ func ConvertPNGtoJPG(dirname string,  pngs []os.FileInfo) () {
 			log.Fatal(err)
 		}
 		defer out.Close()
+
+		fmt.Println("output path created!")
 
 		fmt.Println(outputPath)
 		png.Encode(out, img)
